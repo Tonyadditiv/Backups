@@ -33,10 +33,10 @@ steps:
     inlineScript: |
       # Generates an SAS token for the storage container 
       # (we can define a expiry date using the flag --expiry) 
-      sastoken= az storage container generate-sas --as-user --auth-mode login --expiry ${{ parameters.certificateExpiryDate }} --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }}
+      $sastoken = az storage container generate-sas --as-user --auth-mode login --expiry ${{ parameters.certificateExpiryDate }} --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }}
       
       # Construct the SAS URL for the container
-      sasurl="https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?$sastoken"
+      $sasurl = "https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?$sastoken"
       
       # Create a one-time backup
       az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
