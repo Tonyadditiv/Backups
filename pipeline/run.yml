@@ -24,7 +24,7 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: ${{ parameters.azureResorceManagementConnection }}
-    scriptType: 'ps'
+    scriptType: 'pwsh'
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Generates an SAS token for the storage container 
