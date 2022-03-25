@@ -1,0 +1,42 @@
+parameters:
+- name: storageaccount
+  type: string
+  default: adddevopsstorage
+
+- name: container
+  type: string
+  default: backups
+
+- name: resourcegroup
+  type: string
+  default: dfs-lab-birr
+
+- name: app
+  type: string
+  default: additiv-adminservices-birr
+
+
+pool:
+  name: Default
+  demands: 
+    - Agent.Name -equals ADIPROD070
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'additiv Azure MPN'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Generates an SAS token for the storage container 
+      # (we can define a expiry date using the flag --expiry, in this case we're not) 
+      $sastoken= az storage container generate-sas --name ${{ parameters.container }}
+      
+      # Construct the SAS URL for the container
+      $sasurl="https://$storagename.blob.core.windows.net/${{ parameters.container }}/$sastoken"
+      
+      # Create a one-time backup
+      az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourcegroup }} --webapp-name ${{ parameters.app }}
+      
+      # List statuses of all backups that are complete or currently executing.
+      az webapp config backup list --resource-group ${{ parameters.resourcegroup }} --webapp-name ${{ parameters.app }} 
