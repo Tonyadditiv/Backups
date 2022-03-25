@@ -1,30 +1,29 @@
 parameters:
-- name: storageaccount
+- name: azureResorceManagementConnection
   type: string
-  default: adddevopsstorage
+  default: R&D - MPN(b3511a7b-a35d-4fb5-82c4-b4afb17136f4)
+
+- name: storageAccount
+  type: string
+  default: adddevopsbackups
 
 - name: container
   type: string
   default: backups
 
-- name: resourcegroup
+- name: resourceGroup
   type: string
   default: dfs-lab-birr
 
 - name: app
   type: string
   default: additiv-adminservices-birr
-
-
-pool:
-  name: Default
-  demands: 
-    - Agent.Name -equals ADIPROD070
+  
 
 steps:
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'additiv Azure MPN'
+    azureSubscription: ${{ parameters.azureResorceManagementConnection }}
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
@@ -33,10 +32,10 @@ steps:
       $sastoken= az storage container generate-sas --name ${{ parameters.container }}
       
       # Construct the SAS URL for the container
-      $sasurl="https://$storagename.blob.core.windows.net/${{ parameters.container }}/$sastoken"
+      $sasurl="https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}/$sastoken"
       
       # Create a one-time backup
-      az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourcegroup }} --webapp-name ${{ parameters.app }}
+      az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
       
       # List statuses of all backups that are complete or currently executing.
-      az webapp config backup list --resource-group ${{ parameters.resourcegroup }} --webapp-name ${{ parameters.app }} 
+      az webapp config backup list --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }} 
