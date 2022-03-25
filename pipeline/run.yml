@@ -1,7 +1,7 @@
 parameters:
 - name: storageaccount
   type: string
-  default: adddevopsstorage
+  default: adddevopsbackups
 
 - name: container
   type: string
@@ -15,11 +15,6 @@ parameters:
   type: string
   default: additiv-adminservices-birr
 
-
-pool:
-  name: Default
-  demands: 
-    - Agent.Name -equals ADIPROD070
 
 steps:
 - task: AzureCLI@2
