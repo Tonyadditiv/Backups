@@ -21,7 +21,7 @@ parameters:
 
 - name: certificateExpiryDate
   type: string
-  default: '2022-04-25'
+  default: '2022-03-27'
   
 
 steps:
