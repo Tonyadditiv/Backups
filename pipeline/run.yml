@@ -18,22 +18,9 @@ parameters:
 - name: app
   type: string
   default: additiv-adminservices-birr
-
-- name: certificateExpiryDate
-  type: string
-  default: '2022-03-27'
   
 
 steps:
-
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: ${{ parameters.azureResorceManagementConnection }}
-    scriptType: 'pscore'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      Write-Host "##vso[task.setvariable variable=sastoken;isOutput=true]az storage container generate-sas --as-user --auth-mode login --expiry ${{ parameters.certificateExpiryDate }} --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }}"
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: ${{ parameters.azureResorceManagementConnection }}
@@ -41,16 +28,11 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Generates an SAS token for the storage container 
-      # (we can define a expiry date using the flag --expiry) 
-      #Write-Host "##vso[task.setvariable variable=sastoken;isOutput=true]az storage container generate-sas --as-user --auth-mode login --expiry ${{ parameters.certificateExpiryDate }} --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }}" 
-      #Write-Host "This is my output $(sastoken)"
-      #$sastoken = az storage container generate-sas --as-user --auth-mode login --expiry ${{ parameters.certificateExpiryDate }} --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }}
+      $expiry = [System.DateTime]::UtcNow.AddHours(2).ToString("yyyy-MM-ddTHH:mmZ") ) 
+      $sastoken = az storage container generate-sas --as-user --auth-mode login --expiry $($expiry) --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }} | ConvertFrom-Json
       
-
-      
-
       # Construct the SAS URL for the container
-      $sasurl = "https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?$(sastoken)"
+      $sasurl = "https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?$($sastoken)"
       
       # Create a one-time backup
       az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
