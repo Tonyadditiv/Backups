@@ -28,7 +28,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Generates an SAS token for the storage container 
-      $expiry = [System.DateTime]::UtcNow.AddHours(2).ToString("yyyy-MM-ddTHH:mmZ") ) 
+      $expiry = [System.DateTime]::UtcNow.AddHours(2).ToString("yyyy-MM-ddTHH:mmZ") 
       $sastoken = az storage container generate-sas --as-user --auth-mode login --expiry $($expiry) --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }} | ConvertFrom-Json
       
       # Construct the SAS URL for the container
