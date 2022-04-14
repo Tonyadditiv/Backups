@@ -32,7 +32,7 @@ steps:
       $sastoken = az storage container generate-sas --as-user --auth-mode login --expiry $($expiry) --account-name ${{ parameters.storageAccount }} --name ${{ parameters.container }} | ConvertFrom-Json
       
       # Construct the SAS URL for the container
-      $sasurl = "https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?"`"$($sastoken)`""
+      $sasurl = "https://${{ parameters.storageAccount }}.blob.core.windows.net/${{ parameters.container }}?"`"$($sastoken)`"""
       
       # Create a one-time backup
       az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
