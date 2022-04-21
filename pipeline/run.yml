@@ -40,5 +40,8 @@ steps:
       #Configure new backup schedule
       az webapp config backup update --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }} --frequency 7d --retain-one true --retention 100
       
+      # Show the backup schedule for the web app
+      az webapp config backup show --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
+
       # List statuses of all backups that are complete or currently executing.
       az webapp config backup list --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }} 
