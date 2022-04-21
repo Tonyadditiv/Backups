@@ -36,6 +36,9 @@ steps:
       
       # Create a one-time backup
       az webapp config backup create --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }}
+
+      #Configure new backup schedule
+      az webapp config backup update --container-url $sasurl --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }} --frequency 7d --retain-one true --retention 100
       
       # List statuses of all backups that are complete or currently executing.
       az webapp config backup list --resource-group ${{ parameters.resourceGroup }} --webapp-name ${{ parameters.app }} 
